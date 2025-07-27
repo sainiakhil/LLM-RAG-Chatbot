@@ -69,8 +69,8 @@ Follow these instructions to set up and run the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/sainiakhil/LLM-RAG-Chatbot.git
+cd LLM-RAG-Chatbot
 ```
 
 ### 2. Set Up Environment Variables
