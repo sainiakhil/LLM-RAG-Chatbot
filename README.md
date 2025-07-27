@@ -78,7 +78,6 @@ cd LLM-RAG-Chatbot
 This project requires API keys for Pinecone and Google. These are managed using a `.env` file.
 
 -   Create a new file named `.env` in the root of the project.
--   **This file is listed in `.gitignore` and should never be committed to source control.**
 
 -   Add your keys to the `.env` file, formatted exactly like this (no spaces around the `=`):
 
