@@ -1,38 +1,33 @@
+
 # Changi Airport AI Chatbot ✈️
 
-This project is a sophisticated Retrieval-Augmented Generation (RAG) chatbot designed to answer questions about Singapore Changi Airport and Jewel Changi Airport. It leverages a modern tech stack to provide accurate, context-aware answers based on scraped website content.
+This project is a sophisticated, multi-service chatbot application designed to answer questions about Singapore Changi Airport and Jewel Changi Airport. It leverages a modern, decoupled architecture with a FastAPI backend and a Streamlit frontend, both fully containerized with Docker.
 
-The application consists of a backend REST API built with FastAPI and a simple user interface built with Streamlit. It is fully containerized with Docker for easy deployment and portability.
+The chatbot provides accurate, context-aware answers by using a Retrieval-Augmented Generation (RAG) pipeline, grounding its responses in factual data scraped from the official websites.
 
 ## ✨ Key Features
 
--   **Accurate, Context-Aware Answers:** Uses a RAG pipeline to ground responses in factual website data, preventing hallucinations.
--   **REST API Backend:** A robust FastAPI server that exposes a simple `/ask` endpoint for easy integration.
--   **Vector Search:** Employs Sentence Transformers for creating embeddings and Pinecone as a vector database for efficient similarity search.
--   **LLM Integration:** Powered by Google's Gemini family of models for natural language generation.
--   **Simple UI:** A user-friendly chat interface built with Streamlit for demonstration and interaction.
--   **Dockerized:** The entire backend is containerized with Docker, ensuring a consistent and reproducible environment.
+-   **Decoupled Frontend/Backend:** A scalable, professional architecture with a separate API and user interface.
+-   **Accurate RAG Pipeline:** Grounds LLM responses in factual website data to prevent hallucinations.
+-   **REST API Backend:** A robust FastAPI server exposing a simple `/ask` endpoint for easy integration.
+-   **Vector Search:** Employs Sentence Transformers for embeddings and Pinecone as a vector database for efficient search.
+-   **Interactive UI:** A user-friendly, real-time chat interface built with Streamlit.
+-   **Fully Containerized:** Both the frontend and backend are Dockerized, ensuring consistent, reproducible environments for development and deployment.
 
-## 🛠️ Tech Stack
+## 🏗️ Project Architecture
 
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-009688?style=for-the-badge&logo=fastapi)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.20.0-FF4B4B?style=for-the-badge&logo=streamlit)
-![Docker](https://img.shields.io/badge/Docker-24.0-2496ED?style=for-the-badge&logo=docker)
-![Pinecone](https://img.shields.io/badge/Pinecone-3.0-0077B5?style=for-the-badge&logo=pinecone)
-![Google Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=google)
+The application consists of two independent services:
 
-## 🏗️ Architecture
-
-The application follows a standard client-server architecture. The Streamlit UI acts as a client that communicates with the FastAPI backend via a REST API. The backend handles the complex logic of retrieving context from the vector database and generating a response with the LLM.
+1.  **FastAPI Backend:** Handles all the heavy lifting—data processing, vector retrieval, and LLM interaction.
+2.  **Streamlit UI:** A lightweight client that consumes the backend's REST API to provide a user interface.
 
 ```
 +----------------+      +---------------------+      +------------------------+
+|                |      |  Streamlit UI App   |      |    FastAPI Backend App |
+|      User      +----->+  (in /Chatbot-UI)   +----->+   (in /FastAPI-Backend)|
+|   (Browser)    |      | (Container 1)       |      |      (Container 2)     |
 |                |      |                     |      |                        |
-|   User         +----->+   Streamlit UI      +----->+    FastAPI Backend     |
-| (Browser)      |      | (chatbot_ui.py)     |      |       (main.py)        |
-|                |      |                     |      |                        |
-+----------------+      +----------+----------+      +-----------+------------+
++----------------+      +---------------------+      +-----------+------------+
                                   |                           |
                                   |                           | (Vector Search)
                                   |                           |
@@ -56,15 +51,39 @@ The application follows a standard client-server architecture. The Streamlit UI 
 
 ```
 
+## 📂 Folder Structure
+
+The project is organized into a monorepo with dedicated folders for each service.
+
+```/
+├── FastAPI-Backend/
+│   ├── main.py             # The FastAPI application logic
+│   ├── scrapper.py         # Script to scrape data (run separately)
+│   ├── Dockerfile          # Instructions to build the backend image
+│   ├── requirements.txt    # Python dependencies for the backend
+│   └── .env                # (You must create this) For API keys
+│
+├── Chatbot-UI/
+│   ├── chatbot_ui.py       # The Streamlit application UI
+│   ├── Dockerfile          # Instructions to build the frontend image
+│   └── requirements.txt    # Python dependencies for the frontend
+│
+├── .gitignore
+└── README.md
+```
+
 ## 🚀 Getting Started
 
-Follow these instructions to set up and run the project locally.
+Follow these instructions to set up and run both the backend and frontend services.
 
-### Prerequisites
+## 🛠️ Tech Stack
 
--   [Python 3.9+](https://www.python.org/downloads/)
--   [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for running with Docker)
--   Git
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-009688?style=for-the-badge&logo=fastapi)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.20.0-FF4B4B?style=for-the-badge&logo=streamlit)
+![Docker](https://img.shields.io/badge/Docker-24.0-2496ED?style=for-the-badge&logo=docker)
+![Pinecone](https://img.shields.io/badge/Pinecone-3.0-0077B5?style=for-the-badge&logo=pinecone)
+![Google Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=google)
 
 ### 1. Clone the Repository
 
@@ -73,59 +92,114 @@ git clone https://github.com/sainiakhil/LLM-RAG-Chatbot.git
 cd LLM-RAG-Chatbot
 ```
 
-### 2. Set Up Environment Variables
+### 2. Set Up Backend Environment Variables
 
-This project requires API keys for Pinecone and Google. These are managed using a `.env` file.
+The backend requires API keys to function.
 
--   Create a new file named `.env` in the root of the project.
-
--   Add your keys to the `.env` file, formatted exactly like this (no spaces around the `=`):
+-   Navigate to the backend folder: `cd FastAPI-Backend`
+-   Create a new file named `.env`.
+-   **This file is listed in `.gitignore` and should never be committed.**
+-   Add your keys to the `.env` file, formatted exactly like this:
 
     ```.env
-    # .env.example - Copy this to a new .env file and add your keys
     PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    GOOGLE_API_KEY=AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     ```
 
-### 3. Install Dependencies
+## 🏃 Running for Local Development
 
-It is highly recommended to use a Python virtual environment.
+This approach is best for actively developing the code. You will need two separate terminals.
+
+### Terminal 1: Run the FastAPI Backend
 
 ```bash
-# Create a virtual environment
+# Navigate to the backend directory
+cd FastAPI-Backend
+
+# Create and activate a Python virtual environment (recommended)
 python -m venv .venv
+# On Windows: .\.venv\Scripts\activate
+# On macOS/Linux: source .venv/bin/activate
 
-# Activate the virtual environment
-# On Windows:
-.\.venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
-
-# Install the required packages
+# Install backend dependencies
 pip install -r requirements.txt
-```
 
-## 🏃 Running the Application
-
-The application has two parts: the backend API and the frontend UI. They must be run in separate terminals.
-
-### 1. Run the FastAPI Backend
-
-In your first terminal (with the virtual environment activated):
-
-```bash
+# Run the FastAPI server
 python -m uvicorn main:app --reload
 ```
 
-The API server will start on `http://127.0.0.1:8000`. You can see the auto-generated API documentation at `http://127.0.0.1:8000/docs`.
+The API will be running at `http://127.0.0.1:8000`.
 
-### 2. Run the Streamlit UI
-
-In a **second terminal** (with the virtual environment activated):
+### Terminal 2: Run the Streamlit UI
 
 ```bash
+# Navigate to the frontend directory
+cd Chatbot-UI
+
+# Create and activate a separate virtual environment (recommended)
+python -m venv .venv
+# On Windows: .\.venv\Scripts\activate
+# On macOS/Linux: source .venv/bin/activate
+
+# Install frontend dependencies
+pip install -r requirements.txt
+
+# Run the Streamlit app
 streamlit run chatbot_ui.py
 ```
 
-A new tab should automatically open in your browser with the chatbot interface. You can now start asking questions!
+The UI will be accessible at `http://127.0.0.1:8501`.
+
+## 🐳 Running with Docker
+
+This is the recommended way to run the application for a stable, production-like experience.
+
+### 1. Build the Docker Images
+
+You need to build an image for each service from its respective directory.
+
+```bash
+# Build the backend API image
+cd FastAPI-Backend
+docker build -t changi-chatbot-api .
+cd ..
+
+# Build the frontend UI image
+cd Chatbot-UI
+docker build -t changi-chatbot-ui .
+cd ..
+```
+
+### 2. Run the Docker Containers
+
+You will need two separate terminals to run the containers.
+
+#### Terminal 1: Run the Backend Container
+
+Navigate to the `FastAPI-Backend` folder to give the command access to your `.env` file.
+
+```bash
+cd FastAPI-Backend
+
+# Run the container, securely passing the .env file
+docker run --rm -p 8000:8000 --env-file .env changi-chatbot-api
+```
+
+The backend API is now running and accessible at `http://127.0.0.1:8000`.
+
+#### Terminal 2: Run the Frontend Container
+
+Make sure your `chatbot_ui.py` is pointing to the correct backend URL (`http://127.0.0.1:8000/ask`).
+
+```bash
+# Navigate to the root folder (or anywhere else)
+# This command doesn't depend on local files
+
+# Run the frontend container
+docker run --rm -p 8501:8501 changi-chatbot-ui```
+
+The Streamlit UI is now running and accessible at `http://127.0.0.1:8501`.
+
+```
+
 
