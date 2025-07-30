@@ -1,0 +1,19 @@
+# Git files (if you use it)
+.git
+.gitignore
+
+# IDE / Editor folders
+.vscode/
+
+# Python cache
+__pycache__/
+
+# Secrets file - NEVER include this in your image
+.env
+
+# Other scripts that are not part of the API
+scrapper.py
+chatbot_ui.py
+
+# OS-specific files
+.DS_Store
